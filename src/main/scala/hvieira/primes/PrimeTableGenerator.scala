@@ -1,6 +1,6 @@
 package hvieira.primes
 
-object PrimeTableGenerator extends App{
+object PrimeTableGenerator extends App {
 
   println("Hello World!")
 
