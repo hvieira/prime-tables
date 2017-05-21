@@ -19,7 +19,7 @@ object PrimeSieve {
       }
     }
 
-    val updatedSieve = markMultiplesAsNonPrime(sieve, findMultiples(currentPrime))
+    val updatedSieve = markMultiplesAsNonPrime(sieve, findMultiplesOfPrime(currentPrime))
 
     val nextPrime = sieve.find(tuple => (tuple._1 <= sieveRange && tuple._1 > currentPrime && tuple._2))
     nextPrime match {
@@ -29,17 +29,9 @@ object PrimeSieve {
 
   }
 
-  private def findMultiples(number: Int): List[Int] = {
-
-    def inner(multiples: List[Int], number: Int, multiplier: Int): List[Int] = {
-      val calculatedMultiple = number * multiplier
-      if (calculatedMultiple > sieveRange)
-        multiples
-      else
-        inner(multiples :+ calculatedMultiple, number, multiplier + 1)
-    }
-
-    inner(List(), number, 2)
+  private def findMultiplesOfPrime(prime: Int): List[Int] = {
+    val squareOfPrime = Math.pow(prime, 2).toInt
+    (squareOfPrime to sieveRange).filter(n => n % prime == 0).toList
   }
 
   def getPrimes(numberOfPrimes: Int): List[Int] = {
