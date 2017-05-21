@@ -9,3 +9,5 @@ libraryDependencies ++=  Seq (
 )
 
 mainClass := Some("hvieira.primes.PrimeMultiplicationTable")
+
+assemblyJarName in assembly := s"${name.value}-${version.value}"
