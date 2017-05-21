@@ -20,6 +20,10 @@ class PrimeSieveSpec extends WordSpec with Matchers {
         PrimeSieve.getPrimes(11) should contain inOrderOnly(2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31)
       }
 
+      "be able to compute 20k + primes" in {
+        PrimeSieve.getPrimes(20001) should contain inOrder(2, 31, 10039, 224743)
+      }
+
     }
 
     "calculating zero prime numbers" should {

@@ -2,36 +2,37 @@ package hvieira.primes
 
 object PrimeSieve {
 
-  private val sieveRange = 100000
+  private val sieveRange = 300000
 
-  val finalSieve = computeSieve()
+  private def computePrimes(): List[Int] = {
 
-  private def computeSieve(): List[Int] = {
+    def inner(primes: List[Int], currentNum: Int): List[Int] = {
 
-    def inner(sieve: Vector[Int], currentPrimeIndex: Int): Vector[Int] = {
-
-      if (currentPrimeIndex >= sieve.size)
-        sieve
+      if (currentNum > sieveRange)
+        primes
       else {
-        val prime = sieve(currentPrimeIndex)
-        val multiples = findMultiplesOfPrime(prime)
-        inner(sieve.filter(n => !multiples.contains(n)), currentPrimeIndex + 1)
+        // reduce search space
+        val possibleDivisors = primes.takeWhile(prime => Math.pow(prime, 2) <= currentNum)
+
+        // if is prime
+        if (possibleDivisors.forall(d => currentNum % d != 0))
+          inner(primes :+ currentNum, currentNum + 1)
+        else
+          inner(primes, currentNum + 1)
       }
+
     }
 
-    inner((2 to sieveRange).toVector, 0).toList
+    inner(List(2), 3)
   }
 
-  private def findMultiplesOfPrime(prime: Int): Set[Int] = {
-    val squareOfPrime = Math.pow(prime, 2).toInt
-    (squareOfPrime to sieveRange by prime).toSet
-  }
+  val primes = computePrimes()
 
   def getPrimes(numberOfPrimes: Int): List[Int] = {
     if (numberOfPrimes < 0)
       throw new IllegalArgumentException("Cannot generate primes until a negative number")
     else
-      finalSieve.slice(0, numberOfPrimes)
+      primes.slice(0, numberOfPrimes)
   }
 
 }
