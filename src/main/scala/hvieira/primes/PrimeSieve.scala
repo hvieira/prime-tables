@@ -2,43 +2,36 @@ package hvieira.primes
 
 object PrimeSieve {
 
-  private val sieveRange = 10000
+  private val sieveRange = 100000
 
-  val beginOfSieve = (1 to sieveRange).toVector.map(num => (num, true))
-  val primes = computeSieve(beginOfSieve, 2)
-    .filter(t => t._1 != 1)
-    .filter(t => t._2)
-    .map(t => t._1)
+  val finalSieve = computeSieve()
 
-  private def computeSieve(sieve: Vector[(Int, Boolean)], currentPrime: Int): List[(Int, Boolean)] = {
+  private def computeSieve(): List[Int] = {
 
-    def markMultiplesAsNonPrime(sieve: Vector[(Int, Boolean)], multiples: List[Int]): Vector[(Int, Boolean)] = {
-      multiples match {
-        case multiple :: tail => markMultiplesAsNonPrime(sieve.updated(multiple - 1, (multiple, false)), tail)
-        case List() => sieve
+    def inner(sieve: Vector[Int], currentPrimeIndex: Int): Vector[Int] = {
+
+      if (currentPrimeIndex >= sieve.size)
+        sieve
+      else {
+        val prime = sieve(currentPrimeIndex)
+        val multiples = findMultiplesOfPrime(prime)
+        inner(sieve.filter(n => !multiples.contains(n)), currentPrimeIndex + 1)
       }
     }
 
-    val updatedSieve = markMultiplesAsNonPrime(sieve, findMultiplesOfPrime(currentPrime))
-
-    val nextPrime = sieve.find(tuple => (tuple._1 <= sieveRange && tuple._1 > currentPrime && tuple._2))
-    nextPrime match {
-      case Some(prime) => computeSieve(updatedSieve, prime._1)
-      case None => sieve.toList
-    }
-
+    inner((2 to sieveRange).toVector, 0).toList
   }
 
-  private def findMultiplesOfPrime(prime: Int): List[Int] = {
+  private def findMultiplesOfPrime(prime: Int): Set[Int] = {
     val squareOfPrime = Math.pow(prime, 2).toInt
-    (squareOfPrime to sieveRange).filter(n => n % prime == 0).toList
+    (squareOfPrime to sieveRange).filter(n => n % prime == 0).toSet
   }
 
   def getPrimes(numberOfPrimes: Int): List[Int] = {
     if (numberOfPrimes < 0)
       throw new IllegalArgumentException("Cannot generate primes until a negative number")
     else
-      primes.slice(0, numberOfPrimes)
+      finalSieve.slice(0, numberOfPrimes)
   }
 
 }
