@@ -24,7 +24,7 @@ object PrimeSieve {
 
   private def findMultiplesOfPrime(prime: Int): Set[Int] = {
     val squareOfPrime = Math.pow(prime, 2).toInt
-    (squareOfPrime to sieveRange).filter(n => n % prime == 0).toSet
+    (squareOfPrime to sieveRange by prime).toSet
   }
 
   def getPrimes(numberOfPrimes: Int): List[Int] = {
